@@ -1,7 +1,7 @@
 -- Environment ------------------------------------------------------------
 ---------------------------------------------------------------------------
 
-hs, fn, sh, sys, R, C, daemon, ds4irc = require('vararg').map(require, 'hs', 'fn', 'shell', 'system', 'assets', 'colors', 'daemon', 'ds4irc')
+hs, fn, sh, sys, R, C, daemon = require('vararg').map(require, 'hs', 'fn', 'shell', 'system', 'assets', 'colors', 'daemon')
 
 { execute:exec } = os
 import execute from sh
@@ -81,13 +81,6 @@ console = load 'console',
       displayMode: 'icon'
       sizeMode: 'regular'
   autocompletion: { ['hs']: hs, ['sh']: sh, ['fn']: fn, ['fn.table']: fn.table }
-
-autoproxy = load 'autoproxy',
-  config: R['autoproxy-config.moon']
-  minify: true
-  server:
-    interface: 'localhost'
-    port: 8000
 
 urlevent = load 'urlevent',
   router: {
@@ -192,7 +185,6 @@ hotcorners = load 'hotcorners',
       { modifiers: 0, fn: partial console.toggle, false }
     }
     'double-click': {
-      { modifiers: '⌘', fn: partial ds4irc.start, '192.168.1.202', 4950 }
       { modifiers: 0, fn: hs.reload }
     }
     'right-click': {
@@ -221,23 +213,10 @@ hotcorners = load 'hotcorners',
       }
     }
 
-menubars = load 'menubars', { 'autoproxy', 'caffeinate', 'volume', 'hammerspoon' }, {
+menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
   main:
     flatten: true
     items: { 'volume', 'hammerspoon' }
-  autoproxy:
-    icons:
-      on:     R 'autoproxy-unknown.png', { w: 22, h: 20 }
-      off:    R 'autoproxy-off.png',     { w: 22, h: 20 }
-      auto:   R 'autoproxy-on.png',      { w: 22, h: 20 }
-      direct: R 'autoproxy-direct.png',  { w: 22, h: 20 }
-      proxy:  R 'autoproxy-proxy.png',   { w: 22, h: 20 }
-    shortcuts: {
-      { modifiers: { '⌥' }, toggle: true }
-      { modifiers: { '⌃', '⇧' }, profile: 'proxy' }
-      { modifiers: { '⌃' }, profile: 'auto' }
-      { modifiers: { '⇧' }, profile: 'direct' }
-    }
   caffeinate:
     toggle: 45
     notifyOnCompletion: true
@@ -273,10 +252,5 @@ watchers: load 'watchers', { 'config', 'wifi', 'usb' },
       disconnected: partial exec, [[
         /usr/local/bin/karabiner_cli --select-profile 'AIK'
       ]]
-    'Wireless Controller':
-      connected: () -> -- some delay is needed
-        usleep(100000)
-        ds4irc.start '192.168.1.202', 4950
-      disconnected: ds4irc.stop
 
-return fn.table.merge { :fn, :sh, :sys, :R, :C, :daemon, :ds4irc }, daemon.modules!
+return fn.table.merge { :fn, :sh, :sys, :R, :C, :daemon }, daemon.modules!
