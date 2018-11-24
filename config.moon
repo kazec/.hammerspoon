@@ -93,7 +93,7 @@ urlevent = load 'urlevent',
   router: {
     {
       dest: 'com.google.Chrome'
-      host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com' }
+      host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com', 'bilibili.com' }
     },
     {
       -- Replace 'http(s)://' with 'macappstores://' to open in Mac App Store directly.
@@ -265,8 +265,24 @@ watchers: load 'watchers', { 'config', 'wifi', 'usb' },
         cd $HOME/.config/v2ray && ln -sf public.json config.json && \
         cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
       ]]
+    'ERR_CONN_CLOSED':
+      connected: partial exec, [[
+        cd $HOME/.config/v2ray && ln -sf private.json config.json && \
+        cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
+      ]]
+      disconnected: partial exec, [[
+        cd $HOME/.config/v2ray && ln -sf public.json config.json && \
+        cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
+      ]]
   usb:
     'Poker':
+      connected: partial exec, [[
+        /usr/local/bin/karabiner_cli --select-profile 'Poker'
+      ]]
+      disconnected: partial exec, [[
+        /usr/local/bin/karabiner_cli --select-profile 'AIK'
+      ]]
+    'Poker II':
       connected: partial exec, [[
         /usr/local/bin/karabiner_cli --select-profile 'Poker'
       ]]
