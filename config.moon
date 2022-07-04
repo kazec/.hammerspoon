@@ -82,17 +82,17 @@ console = load 'console',
       sizeMode: 'regular'
   autocompletion: { ['hs']: hs, ['sh']: sh, ['fn']: fn, ['fn.table']: fn.table }
 
-autoproxy = load 'autoproxy',
-  config: R['autoproxy-config.moon']
-  minify: true
-  server:
-    interface: 'localhost'
-    port: 8000
+-- autoproxy = load 'autoproxy',
+--   config: R['autoproxy-config.moon']
+--   minify: true
+--   server:
+--     interface: 'localhost'
+--     port: 8000
 
 urlevent = load 'urlevent',
   router: {
     {
-      dest: 'com.google.Chrome'
+      dest: 'com.microsoft.edgemac'
       host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com', 'bilibili.com' }
     },
     {
@@ -221,27 +221,32 @@ hotcorners = load 'hotcorners',
       }
     }
 
-menubars = load 'menubars', { 'autoproxy', 'caffeinate', 'volume', 'hammerspoon' }, {
+menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
   main:
     flatten: true
     items: { 'volume', 'hammerspoon' }
-  autoproxy:
-    icons:
-      on:     R 'autoproxy-unknown.png', { w: 22, h: 20 }
-      off:    R 'autoproxy-off.png',     { w: 22, h: 20 }
-      auto:   R 'autoproxy-on.png',      { w: 22, h: 20 }
-      direct: R 'autoproxy-direct.png',  { w: 22, h: 20 }
-      proxy:  R 'autoproxy-proxy.png',   { w: 22, h: 20 }
-    shortcuts: {
-      { modifiers: { '⌥' }, toggle: true }
-      { modifiers: { '⌃', '⇧' }, profile: 'proxy' }
-      { modifiers: { '⌃' }, profile: 'auto' }
-      { modifiers: { '⇧' }, profile: 'direct' }
-    }
+  -- autoproxy:
+  --   icons:
+  --     on:     R 'autoproxy-unknown.png', { w: 22, h: 20 }
+  --     off:    R 'autoproxy-off.png',     { w: 22, h: 20 }
+  --     auto:   R 'autoproxy-on.png',      { w: 22, h: 20 }
+  --     direct: R 'autoproxy-direct.png',  { w: 22, h: 20 }
+  --     proxy:  R 'autoproxy-proxy.png',   { w: 22, h: 20 }
+  --   shortcuts: {
+  --     { modifiers: { '⌥' }, toggle: true }
+  --     { modifiers: { '⌃', '⇧' }, profile: 'proxy' }
+  --     { modifiers: { '⌃' }, profile: 'auto' }
+  --     { modifiers: { '⇧' }, profile: 'direct' }
+  --   }
   caffeinate:
     toggle: 45
     notifyOnCompletion: true
-    durations: { -1, 10, 30, 60, 120, 180, 240, 300 }
+    durations: {
+      -1,
+      "One 🍅": 25,
+      "One Big 🍅": 50,
+      "One Mega 🍅": 90
+    }
     icons:
       on:  R 'caffeinate-on.png',  { w: 22, h: 20 }
       off: R 'caffeinate-off.png', { w: 22, h: 20 }
