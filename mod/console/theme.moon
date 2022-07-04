@@ -3,7 +3,7 @@
 ---------------------------------------------------------------------------
 
 import ieach, map, sort, keys from require 'fn.table'
-import pipe, partial, once from require 'fn'
+import partial, once from require 'fn'
 
 { :isstring, :checkers, sigcheck:T } = require 'typecheck'
 { get:getcolor } = require 'colors'

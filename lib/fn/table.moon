@@ -12,6 +12,11 @@ import pairs, ipairs from _G
 
 isidx = (k) -> isnumber(k) and k >= 1 and floor(k) == k
 
+_sort = table.sort
+sort = (t, c) ->
+  _sort(t, c)
+  return t
+
 ieach = (list, fn) -> for _, v in ipairs list do fn v
 
 ieachi = (list, fn) -> for i, v in ipairs list do fn i, v
@@ -148,7 +153,7 @@ enpair = (dict) ->
 
 depair = (dict) ->
   t = {}
-  for _, v in ipairs dict do t[v[1]] = v[2]
+  for k, v in pairs dict do t[#t + 1] = {k, v}
   return t
 
 unset = (dict, fn) ->
@@ -197,6 +202,8 @@ override = (d1, d2) ->
 ---------------------------------------------------------------------------
 
 merge {
+  isidx:     T '?', isidx
+  sort:      T 'table, function', sort
   ieach:     T 'table, function', ieach
   ieachi:    T 'table, function', ieachi
   ieachr:    T 'table, function', ieachr
