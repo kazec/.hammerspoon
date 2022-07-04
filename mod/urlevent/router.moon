@@ -26,12 +26,12 @@ route = (_, host, params, url, rules) ->
        elseif isfunction r.dest
          return r.dest host, params, url
        else
-         log.error 'Invalid rule destination: ' .. tostring(r.dest)
+         log.warn 'Invalid rule destination: ' .. tostring(r.dest)
   log.warnf 'Unable to route HTTP URL: %q', url if log.warnf
 
 init = (router) ->
   if urlevent.getDefaultHandler('http')\lower! != processInfo.bundleID\lower!
-    log.error 'Hammerspoon is not configured for http(s):// URLs.\nType "hs.urlevent.setDefaultHandler(\'http\', hs.processInfo.bundleID)" and confirm the prompt.'
+    log.warn 'Hammerspoon is not configured for http(s):// URLs.\nType "hs.urlevent.setDefaultHandler(\'http\', hs.processInfo.bundleID)" and confirm the prompt.'
   urlevent.httpCallback = isfunction(router) and router or partialr(route, router)
 
 ---------------------------------------------------------------------------
