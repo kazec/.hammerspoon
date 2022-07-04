@@ -66,11 +66,11 @@ networksetup = (cmd, value, service) ->
     settings.set 'autoproxy.network-service', service
 
   return if value == nil
-    run '/usr/bin/sudo', '/usr/sbin/networksetup', cmd, service
+    run '/usr/sbin/networksetup', cmd, service
   elseif isboolean value
-    execute '/usr/bin/sudo', '/usr/sbin/networksetup', cmd, service, value and 'on' or 'off'
+    execute '/usr/sbin/networksetup', cmd, service, value and 'on' or 'off'
   else
-    execute '/usr/bin/sudo', '/usr/sbin/networksetup', cmd, service, value
+    execute '/usr/sbin/networksetup', cmd, service, value
 
 makeurl = (server, path) ->
   return format 'http://%s:%d/%s', server\getInterface! or '0.0.0.0', server\getPort!, path
