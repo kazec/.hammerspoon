@@ -153,15 +153,17 @@ window = load 'window', () =>
     0.60, 0.00, 0.40, 1.00     -- right 40%
     0.70, 0.00, 0.30, 1.00 })) -- right 30%
   bind '⇧', 'f3', partial(@focused, partial(@layout.snap, {
-    0.00, 0.00, 0.50, 0.50     -- top left 25%
-    0.50, 0.00, 0.50, 0.50     -- top right 25%
-    0.50, 0.50, 0.50, 0.50     -- bottom right 25%
-    0.00, 0.50, 0.50, 0.50 })) -- bottom left 25%
+    0.00, 0.00, 1.00, 0.70     -- top 70%
+    0.00, 0.00, 1.00, 0.60     -- top 60%
+    0.00, 0.00, 1.00, 0.50     -- top 50%
+    0.00, 0.00, 1.00, 0.40     -- top 40%
+    0.00, 0.00, 1.00, 0.30 })) -- top 30%
   bind '⇧', 'f4', partial(@focused, partial(@layout.snap, {
-    0.00, 0.50, 0.50, 0.50     -- bottom left 25%
-    0.50, 0.50, 0.50, 0.50     -- bottom right 25%
-    0.50, 0.00, 0.50, 0.50     -- top right 25%
-    0.00, 0.00, 0.50, 0.50 })) -- top left 25%
+    0.00, 0.30, 1.00, 0.70     -- bottom 70%
+    0.00, 0.40, 1.00, 0.60     -- bottom 60%
+    0.00, 0.50, 1.00, 0.50     -- bottom 50%
+    0.00, 0.60, 1.00, 0.40     -- bottom 40%
+    0.00, 0.70, 1.00, 0.30 })) -- bottom 30%
   -- move/extend window
   bind '⇧+⌃+⌥', 'w'    , partial(@focused, partial(@layout.move  , 01, 00))
   bind '⇧+⌃+⌥', 'd'    , partial(@focused, partial(@layout.move  , 00, -1))
