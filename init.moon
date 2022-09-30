@@ -1,13 +1,4 @@
--- Setup Environment ------------------------------------------------------
-
-package.path  ..= ';./lib/?/init.lua;./lib/?.lua;./mod/?/init.lua;./mod/?.lua;./util/?/init.lua;./util/?.lua;./ext/?/init.lua'
-package.cpath ..= ';./lib/?.so;./lib/?/init.so;./ext/?.so'
-
-_G.require = _G.rawrequire
-package.loaded['hs'] = _G.hs -- So that require 'hs' no longer fails.
-require 'moonscript'
-
--- Global Settings --------------------------------------------------------
+-- Debug Settings --------------------------------------------------------
 
 -- dofile './debug.moon'
 
@@ -16,7 +7,7 @@ with require 'log'
   .tocli false
   .toconsole true
   .tohistory 'warn'
-  .tofile os.getenv('HOME') .. '/.local/log/org.hammerspoon.log'
+  .tofile os.getenv('HOME') .. '/Library/Logs/org.hammerspoon.log'
 
 -- Load Modules -----------------------------------------------------------
 
