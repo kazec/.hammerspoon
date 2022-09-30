@@ -5,7 +5,7 @@
 import max, min from math
 { sigcheck:T } = require 'typecheck'
 import allScreens, mainScreen from require 'hs.screen'
-{ :focusedWindow, :_setTopLeft, :_setSize, :_topLeft, :_size } = require 'hs.window'
+{ :focusedWindow } = require 'hs.window'
 
 ---------------------------------------------------------------------------
 -- Implementation ---------------------------------------------------------
@@ -20,7 +20,7 @@ focused = (next) ->
   return if slen == 1
 
   ph = screens[1]\_frame!.h
-  topleft, size = _topLeft(window), _size(window)
+  topleft, size = window\topLeft!, window\size!
   fx, fy, fw, fh = topleft.x, topleft.y, size.w, size.h
   farea = fw * fh
 
@@ -44,8 +44,8 @@ focused = (next) ->
       w = (fw / sw) * nw
       h = (fh / sh) * nh
 
-      _setTopLeft window, { :x, :y }
-      _setSize window, { :w, :h }
+      window\setTopLeft { :x, :y }
+      window\setSize { :w, :h }
 
 ---------------------------------------------------------------------------
 -- Interface --------------------------------------------------------------

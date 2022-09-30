@@ -123,16 +123,16 @@ window = load 'window', () =>
   -- switch focused window between screens
   bind '', 'f13', partial(@screen.focused, true)
   -- switch focused window between spaces
-  bind '⌥', 'f16', partial(@space.focused, false)
-  bind '⌥', 'f17', partial(@space.focused, true)
-  bind '⌥+⇧', 'f1', partial(@space.focused, 1)
-  bind '⌥+⇧', 'f2', partial(@space.focused, 2)
-  bind '⌥+⇧', 'f3', partial(@space.focused, 3)
-  bind '⌥+⇧', 'f4', partial(@space.focused, 4)
-  bind '⌥+⇧', 'f5', partial(@space.focused, 5)
-  bind '⌥+⇧', 'f6', partial(@space.focused, 6)
-  bind '⌥+⇧', 'f7', partial(@space.focused, 7)
-  bind '⌥+⇧', 'f8', partial(@space.focused, 8)
+  -- bind '⌥', 'f16', partial(@space.focused, false)
+  -- bind '⌥', 'f17', partial(@space.focused, true)
+  -- bind '⌥+⇧', 'f1', partial(@space.focused, 1)
+  -- bind '⌥+⇧', 'f2', partial(@space.focused, 2)
+  -- bind '⌥+⇧', 'f3', partial(@space.focused, 3)
+  -- bind '⌥+⇧', 'f4', partial(@space.focused, 4)
+  -- bind '⌥+⇧', 'f5', partial(@space.focused, 5)
+  -- bind '⌥+⇧', 'f6', partial(@space.focused, 6)
+  -- bind '⌥+⇧', 'f7', partial(@space.focused, 7)
+  -- bind '⌥+⇧', 'f8', partial(@space.focused, 8)
   -- snap and resize focused window to prefined grids
   bind '⇧', 'f14', partial(@focused, partial(@layout.snap, {
     0.10, 0.10, 0.80, 0.80     -- center 80%
