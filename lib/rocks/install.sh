@@ -1,7 +1,7 @@
 #! /usr/bin/env zsh
 
 if [ ! $(command -v luarocks) ]; then
-    echo "luarocks not found, check your lua installation then retry."
+    echo "luarocks not found in $PATH, check your lua installation then retry."
     exit 1
 fi
 
