@@ -15,7 +15,7 @@ if hs.fs.attributes(rocks_lib_dir, 'mode') ~= 'directory' then
       hs.notify.show('Lua rocks', 'Rocks installation failed', 'Click to see why', '')
       return
    end
-   hs.notify.show('Lua rocks', 'Finished installing ' .. tostring(#rocks_libs) ' rocks', '')
+   hs.notify.show('Lua rocks', 'Finished installing ' .. tostring(#rocks_libs) .. ' rocks', '')
 end
 
 local local_path = './lib/?/init.lua;./lib/?.lua;./mod/?/init.lua;./mod/?.lua;./util/?/init.lua;./util/?.lua;./ext/?/init.lua;'

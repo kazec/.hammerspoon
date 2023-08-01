@@ -11,7 +11,6 @@ string = require 'fn.string'
 { inspect:_inspect } = require 'inspect'
 import partial, partialr from require 'fn.internal'
 
-
 ---------------------------------------------------------------------------
 -- Implementation ---------------------------------------------------------
 ---------------------------------------------------------------------------
