@@ -23,7 +23,6 @@ local *
 
 console = load 'console',
   titleVisible: false
-  toggleHotKey: { '⌃+⇧', 'z' }
   behavior: windowBehaviors.canJoinAllSpaces
   themes:
     'Solarized Light':
