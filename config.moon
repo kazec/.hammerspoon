@@ -110,17 +110,31 @@ urlevent = load 'urlevent',
     'reload': hs.reload
 
 window = load 'window', () =>
-  -- cycle ordered windows
-  bind '', 'f19', partial(@cycle, 3)
-  -- animation disabled zoom
-  bind '', 'f18', partial(@zoom, 0.75)
-  -- center, maximize, left/right half
-  bind '', 'f20', partial(@focused, @layout.center)
-  bind '⇧', 'f15', partial(@focused, @layout.maximize)
-  bind '', 'f16', partial(@focused, partial(@layout.normalized, 0.0, 0.0, 0.5, 1.0))
-  bind '', 'f17', partial(@focused, partial(@layout.normalized, 0.5, 0.0, 0.5, 1.0))
+  -- f13, mapped to tab
   -- switch focused window between screens
   bind '', 'f13', partial(@screen.focused, true)
+
+  -- f14, mapped to esc
+  -- center focused window
+  bind '', 'f20', partial(@focused, @layout.center)
+  -- animation disabled zoom
+  bind '⌥', 'f14', partial(@zoom, 0.75)
+  -- snap and resize focused window to prefined grids
+  bind '⇧', 'f14', partial(@focused, partial(@layout.snap, {
+    0.10, 0.10, 0.80, 0.80     -- center 80%
+    0.15, 0.15, 0.70, 0.70     -- center 70%
+    0.20, 0.20, 0.60, 0.60     -- center 60%
+    0.25, 0.25, 0.50, 0.50     -- center 50%
+    0.30, 0.30, 0.40, 0.40 })) -- center 40%
+
+  -- maximize focused window
+  bind '⇧', 'f15', partial(@focused, @layout.maximize)
+
+  -- cycle ordered windows
+  bind '⌥', 'f19', partial(@cycle, 3)
+  
+  -- bind '', 'f16', partial(@focused, partial(@layout.normalized, 0.0, 0.0, 0.5, 1.0))
+  -- bind '', 'f17', partial(@focused, partial(@layout.normalized, 0.5, 0.0, 0.5, 1.0))
   -- switch focused window between spaces
   -- bind '⌥', 'f16', partial(@space.focused, false)
   -- bind '⌥', 'f17', partial(@space.focused, true)
@@ -132,32 +146,26 @@ window = load 'window', () =>
   -- bind '⌥+⇧', 'f6', partial(@space.focused, 6)
   -- bind '⌥+⇧', 'f7', partial(@space.focused, 7)
   -- bind '⌥+⇧', 'f8', partial(@space.focused, 8)
-  -- snap and resize focused window to prefined grids
-  bind '⇧', 'f14', partial(@focused, partial(@layout.snap, {
-    0.10, 0.10, 0.80, 0.80     -- center 80%
-    0.15, 0.15, 0.70, 0.70     -- center 70%
-    0.20, 0.20, 0.60, 0.60     -- center 60%
-    0.25, 0.25, 0.50, 0.50     -- center 50%
-    0.30, 0.30, 0.40, 0.40 })) -- center 40%
-  bind '⇧', 'f1', partial(@focused, partial(@layout.snap, {
+
+  bind '', 'f16', partial(@focused, partial(@layout.snap, {
     0.00, 0.00, 0.70, 1.00     -- left 70%
     0.00, 0.00, 0.60, 1.00     -- left 60%
-    0.00, 0.00, 0.50, 1.00     -- left 50%
+    0.00, 0.00, 0.50, 1.00     -- left 50
     0.00, 0.00, 0.40, 1.00     -- left 40%
     0.00, 0.00, 0.30, 1.00 })) -- left 30%
-  bind '⇧', 'f2', partial(@focused, partial(@layout.snap, {
+  bind '', 'f17', partial(@focused, partial(@layout.snap, {
     0.30, 0.00, 0.70, 1.00     -- right 70%
     0.40, 0.00, 0.60, 1.00     -- right 60%
     0.50, 0.00, 0.50, 1.00     -- right 50%
     0.60, 0.00, 0.40, 1.00     -- right 40%
     0.70, 0.00, 0.30, 1.00 })) -- right 30%
-  bind '⇧', 'f3', partial(@focused, partial(@layout.snap, {
+  bind '', 'f18', partial(@focused, partial(@layout.snap, {
     0.00, 0.00, 1.00, 0.70     -- top 70%
     0.00, 0.00, 1.00, 0.60     -- top 60%
     0.00, 0.00, 1.00, 0.50     -- top 50%
     0.00, 0.00, 1.00, 0.40     -- top 40%
     0.00, 0.00, 1.00, 0.30 })) -- top 30%
-  bind '⇧', 'f4', partial(@focused, partial(@layout.snap, {
+  bind '', 'f20', partial(@focused, partial(@layout.snap, {
     0.00, 0.30, 1.00, 0.70     -- bottom 70%
     0.00, 0.40, 1.00, 0.60     -- bottom 60%
     0.00, 0.50, 1.00, 0.50     -- bottom 50%
@@ -168,10 +176,10 @@ window = load 'window', () =>
   bind '⇧+⌃+⌥', 'd'    , partial(@focused, partial(@layout.move  , 00, -1))
   bind '⇧+⌃+⌥', 's'    , partial(@focused, partial(@layout.move  , -1, 00))
   bind '⇧+⌃+⌥', 'a'    , partial(@focused, partial(@layout.move  , 00, 01))
-  bind '⇧+⌃+⌥', 'up'   , partial(@focused, partial(@layout.extend, 01, 00))
-  bind '⇧+⌃+⌥', 'right', partial(@focused, partial(@layout.extend, 00, -1))
-  bind '⇧+⌃+⌥', 'down' , partial(@focused, partial(@layout.extend, -1, 00))
-  bind '⇧+⌃+⌥', 'left' , partial(@focused, partial(@layout.extend, 00, 01))
+  -- bind '⇧+⌃+⌥', 'up'   , partial(@focused, partial(@layout.extend, 01, 00))
+  -- bind '⇧+⌃+⌥', 'right', partial(@focused, partial(@layout.extend, 00, -1))
+  -- bind '⇧+⌃+⌥', 'down' , partial(@focused, partial(@layout.extend, -1, 00))
+  -- bind '⇧+⌃+⌥', 'left' , partial(@focused, partial(@layout.extend, 00, 01))
 
 hotcorners = load 'hotcorners',
   debug: false
