@@ -192,7 +192,7 @@ hotcorners = load 'hotcorners',
     }
   'bottom-left':
     'mouse-hover': {
-      { modifiers: 'fn', fn: sys.sleep }
+      { modifiers: 'fn', fn: () -> doAfter 1, sys.sleep }
       { modifiers: '⌃', fn: sys.display.sleep }
       { modifiers: '⌃+⌥', fn: sys.display.lock }
       { modifiers: 0, delay: 5, fn: sys.screensaver }
