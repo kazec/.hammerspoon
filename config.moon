@@ -88,35 +88,16 @@ console = load 'console',
 --     interface: 'localhost'
 --     port: 8000
 
-urlevent = load 'urlevent',
-  router: {
-    {
-      dest: 'com.microsoft.edgemac'
-      host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com', 'bilibili.com' }
-    },
-    {
-      -- Replace 'http(s)://' with 'macappstores://' to open in Mac App Store directly.
-      match: (host, params, url) ->
-        return host == 'itunes.apple.com' and params['mt'] == '12'
-      dest: (host, params, url) ->
-        url = url\gsub 'https?://(.+)', 'macappstores://%1'
-        return execute 'open', url
-    },
-    {
-      dest: 'com.apple.Safari'
-    }
-  },
-  callbacks:
-    'reload': hs.reload
-
 window = load 'window', () =>
   -- f13, mapped to tab
   -- switch focused window between screens
   bind '', 'f13', partial(@screen.focused, true)
 
-  -- f14, mapped to esc
+  -- f19, mapped to x
   -- center focused window
-  bind '', 'f20', partial(@focused, @layout.center)
+  bind '', 'f19', partial(@focused, @layout.center)
+
+  -- f14, mapped to esc
   -- animation disabled zoom
   bind '⌥', 'f14', partial(@zoom, 0.75)
   -- snap and resize focused window to prefined grids
@@ -181,6 +162,28 @@ window = load 'window', () =>
   -- bind '⇧+⌃+⌥', 'down' , partial(@focused, partial(@layout.extend, -1, 00))
   -- bind '⇧+⌃+⌥', 'left' , partial(@focused, partial(@layout.extend, 00, 01))
 
+urlevent = load 'urlevent',
+  -- router: {
+  --   {
+  --     dest: 'com.microsoft.edgemac'
+  --     host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com', 'bilibili.com' }
+  --   },
+  --   {
+  --     -- Replace 'http(s)://' with 'macappstores://' to open in Mac App Store directly.
+  --     match: (host, params, url) ->
+  --       return host == 'itunes.apple.com' and params['mt'] == '12'
+  --     dest: (host, params, url) ->
+  --       url = url\gsub 'https?://(.+)', 'macappstores://%1'
+  --       return execute 'open', url
+  --   },
+  --   {
+  --     dest: 'com.apple.Safari'
+  --   }
+  -- },
+  callbacks:
+    'reload': hs.reload,
+    'toggle_app': (_, args) -> window.toggle args['id']
+
 hotcorners = load 'hotcorners',
   debug: false
   supportMultiDisplays: true
@@ -191,25 +194,6 @@ hotcorners = load 'hotcorners',
       { modifiers: '⌥', fn: sys.finder.toggleHidden }
     }
   'bottom-left':
-    'mouse-hover': {
-      { modifiers: 'fn', fn: () -> doAfter 1, sys.sleep }
-      { modifiers: '⌃', fn: sys.display.sleep }
-      { modifiers: '⌃+⌥', fn: sys.display.lock }
-      { modifiers: 0, delay: 5, fn: sys.screensaver }
-    }
-    'left-click': {
-      { modifiers: 0, fn: partial console.toggle, false }
-    }
-    'double-click': {
-      { modifiers: '⌘', fn: partial ds4irc.start, '192.168.1.202', 4950 }
-      { modifiers: 0, fn: hs.reload }
-    }
-    'right-click': {
-      { modifiers: 'fn', fn: sys.logout }
-      { modifiers: '⌃', fn: sys.shutdown }
-      { modifiers: '⌃+⌥', fn: sys.restart }
-    }
-  'bottom-right':
     'mouse-hover': {
       { modifiers: '⌘', fn: itunes.playpause }
       { modifiers: '⌘', interval: 5, fn: itunes.next }
@@ -229,6 +213,26 @@ hotcorners = load 'hotcorners',
           itunes.setVolume(itunes.getVolume! + (deltaY < 0 and 1 or -1)) if deltaY != 0
       }
     }
+  'bottom-right':
+    'mouse-hover': {
+      { modifiers: 'fn', fn: () -> doAfter 1, sys.sleep }
+      { modifiers: '⌃', fn: sys.display.lock }
+      { modifiers: '⌃+⌥', fn: sys.display.sleep }
+      { modifiers: 0, delay: 5, fn: sys.screensaver }
+    }
+    'left-click': {
+      { modifiers: 0, fn: partial console.toggle, false }
+    }
+    'double-click': {
+      { modifiers: '⌘', fn: partial ds4irc.start, '192.168.1.202', 4950 }
+      { modifiers: 0, fn: hs.reload }
+    }
+    'right-click': {
+      { modifiers: 'fn', fn: sys.logout }
+      { modifiers: '⌃', fn: sys.shutdown }
+      { modifiers: '⌃+⌥', fn: sys.restart }
+    }
+  
 
 menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
   main:
