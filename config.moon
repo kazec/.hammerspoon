@@ -7,7 +7,7 @@ hs, fn, sh, sys, R, C, daemon, ds4irc = require('vararg').map(require, 'hs', 'fn
 import execute from sh
 import partial from fn
 import load from daemon
-import bind from require 'hs.hotkey'
+{ bind:hotkey } = require 'hs.hotkey'
 import window, mouse from hs
 import doAfter, usleep from require 'hs.timer'
 import windowBehaviors from require 'hs.drawing'
@@ -91,19 +91,15 @@ console = load 'console',
 --     port: 8000
 
 window = load 'window', () =>
-  -- f13, mapped to tab
-  -- switch focused window between screens
-  bind '', 'f13', partial(@screen.focused, true)
-
   -- f19, mapped to x
   -- center focused window
-  bind '', 'f19', partial(@focused, @layout.center)
+  hotkey '', 'f19', partial(@focused, @layout.center)
 
   -- f14, mapped to esc
   -- animation disabled zoom
-  bind '⌥', 'f14', partial(@zoom, 0.75)
+  hotkey '⌥', 'f14', partial(@zoom, 0.75)
   -- snap and resize focused window to prefined grids
-  bind '⇧', 'f14', partial(@focused, partial(@layout.snap, {
+  hotkey '⇧', 'f14', partial(@focused, partial(@layout.snap, {
     0.10, 0.10, 0.80, 0.80     -- center 80%
     0.15, 0.15, 0.70, 0.70     -- center 70%
     0.20, 0.20, 0.60, 0.60     -- center 60%
@@ -111,58 +107,62 @@ window = load 'window', () =>
     0.30, 0.30, 0.40, 0.40 })) -- center 40%
 
   -- maximize focused window
-  bind '⇧', 'f15', partial(@focused, @layout.maximize)
+  hotkey '⇧', 'f15', partial(@focused, @layout.maximize)
 
   -- cycle ordered windows
-  bind '⌥', 'f19', partial(@cycle, 3)
+  hotkey '⌥', 'f19', partial(@cycle, 3)
   
-  -- bind '', 'f16', partial(@focused, partial(@layout.normalized, 0.0, 0.0, 0.5, 1.0))
-  -- bind '', 'f17', partial(@focused, partial(@layout.normalized, 0.5, 0.0, 0.5, 1.0))
-  -- switch focused window between spaces
-  -- bind '⌥', 'f16', partial(@space.focused, false)
-  -- bind '⌥', 'f17', partial(@space.focused, true)
-  -- bind '⌥+⇧', 'f1', partial(@space.focused, 1)
-  -- bind '⌥+⇧', 'f2', partial(@space.focused, 2)
-  -- bind '⌥+⇧', 'f3', partial(@space.focused, 3)
-  -- bind '⌥+⇧', 'f4', partial(@space.focused, 4)
-  -- bind '⌥+⇧', 'f5', partial(@space.focused, 5)
-  -- bind '⌥+⇧', 'f6', partial(@space.focused, 6)
-  -- bind '⌥+⇧', 'f7', partial(@space.focused, 7)
-  -- bind '⌥+⇧', 'f8', partial(@space.focused, 8)
+  -- hotkey '', 'f16', partial(@focused, partial(@layout.normalized, 0.0, 0.0, 0.5, 1.0))
+  -- hotkey '', 'f17', partial(@focused, partial(@layout.normalized, 0.5, 0.0, 0.5, 1.0))
 
-  bind '', 'f16', partial(@focused, partial(@layout.snap, {
+  -- f13, mapped to tab
+  -- switch focused window between screens
+  hotkey '', 'f13', partial(@screen.focused, true)
+  -- switch focused window between spaces
+  hotkey '⌥', 'f13', partial(@space.focused, true)
+  hotkey '⌃', 'f13', partial(@space.focused, false)
+  -- hotkey '⌥+⇧', 'f1', partial(@space.focused, 1)
+  -- hotkey '⌥+⇧', 'f2', partial(@space.focused, 2)
+  -- hotkey '⌥+⇧', 'f3', partial(@space.focused, 3)
+  -- hotkey '⌥+⇧', 'f4', partial(@space.focused, 4)
+  -- hotkey '⌥+⇧', 'f5', partial(@space.focused, 5)
+  -- hotkey '⌥+⇧', 'f6', partial(@space.focused, 6)
+  -- hotkey '⌥+⇧', 'f7', partial(@space.focused, 7)
+  -- hotkey '⌥+⇧', 'f8', partial(@space.focused, 8)
+
+  hotkey '', 'f16', partial(@focused, partial(@layout.snap, {
     0.00, 0.00, 0.70, 1.00     -- left 70%
     0.00, 0.00, 0.60, 1.00     -- left 60%
     0.00, 0.00, 0.50, 1.00     -- left 50
     0.00, 0.00, 0.40, 1.00     -- left 40%
     0.00, 0.00, 0.30, 1.00 })) -- left 30%
-  bind '', 'f17', partial(@focused, partial(@layout.snap, {
+  hotkey '', 'f17', partial(@focused, partial(@layout.snap, {
     0.30, 0.00, 0.70, 1.00     -- right 70%
     0.40, 0.00, 0.60, 1.00     -- right 60%
     0.50, 0.00, 0.50, 1.00     -- right 50%
     0.60, 0.00, 0.40, 1.00     -- right 40%
     0.70, 0.00, 0.30, 1.00 })) -- right 30%
-  bind '', 'f18', partial(@focused, partial(@layout.snap, {
+  hotkey '', 'f18', partial(@focused, partial(@layout.snap, {
     0.00, 0.00, 1.00, 0.70     -- top 70%
     0.00, 0.00, 1.00, 0.60     -- top 60%
     0.00, 0.00, 1.00, 0.50     -- top 50%
     0.00, 0.00, 1.00, 0.40     -- top 40%
     0.00, 0.00, 1.00, 0.30 })) -- top 30%
-  bind '', 'f20', partial(@focused, partial(@layout.snap, {
+  hotkey '', 'f20', partial(@focused, partial(@layout.snap, {
     0.00, 0.30, 1.00, 0.70     -- bottom 70%
     0.00, 0.40, 1.00, 0.60     -- bottom 60%
     0.00, 0.50, 1.00, 0.50     -- bottom 50%
     0.00, 0.60, 1.00, 0.40     -- bottom 40%
     0.00, 0.70, 1.00, 0.30 })) -- bottom 30%
   -- move/extend window
-  bind '⇧+⌃+⌥', 'w'    , partial(@focused, partial(@layout.move  , 01, 00))
-  bind '⇧+⌃+⌥', 'd'    , partial(@focused, partial(@layout.move  , 00, -1))
-  bind '⇧+⌃+⌥', 's'    , partial(@focused, partial(@layout.move  , -1, 00))
-  bind '⇧+⌃+⌥', 'a'    , partial(@focused, partial(@layout.move  , 00, 01))
-  -- bind '⇧+⌃+⌥', 'up'   , partial(@focused, partial(@layout.extend, 01, 00))
-  -- bind '⇧+⌃+⌥', 'right', partial(@focused, partial(@layout.extend, 00, -1))
-  -- bind '⇧+⌃+⌥', 'down' , partial(@focused, partial(@layout.extend, -1, 00))
-  -- bind '⇧+⌃+⌥', 'left' , partial(@focused, partial(@layout.extend, 00, 01))
+  hotkey '⇧+⌃+⌥', 'w'    , partial(@focused, partial(@layout.move  , 01, 00))
+  hotkey '⇧+⌃+⌥', 'd'    , partial(@focused, partial(@layout.move  , 00, -1))
+  hotkey '⇧+⌃+⌥', 's'    , partial(@focused, partial(@layout.move  , -1, 00))
+  hotkey '⇧+⌃+⌥', 'a'    , partial(@focused, partial(@layout.move  , 00, 01))
+  -- hotkey '⇧+⌃+⌥', 'up'   , partial(@focused, partial(@layout.extend, 01, 00))
+  -- hotkey '⇧+⌃+⌥', 'right', partial(@focused, partial(@layout.extend, 00, -1))
+  -- hotkey '⇧+⌃+⌥', 'down' , partial(@focused, partial(@layout.extend, -1, 00))
+  -- hotkey '⇧+⌃+⌥', 'left' , partial(@focused, partial(@layout.extend, 00, 01))
 
 urlevent = load 'urlevent',
   -- router: {

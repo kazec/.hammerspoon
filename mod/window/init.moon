@@ -20,6 +20,7 @@ self =
   zoom: require 'window.zoom'
   cycle: require 'window.cycle'
   layout: require 'window.layout'
+  space: require 'window.space'
 
 focused = (framer) ->
   window = focusedWindow!
