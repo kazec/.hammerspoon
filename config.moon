@@ -70,7 +70,8 @@ console = load 'console',
     items: {
       { id: "NSToolbarFlexibleSpaceItem" }
       { id: "Reload", image: R('reload.png'), tooltip: 'Reload Hammerspoon', fn: hs.reload }
-      { id: "History", image: R('history.png'), tooltip: 'Show Logging History', fn: () -> log.print! }
+      { id: "Shown History", image: R('history.png'), tooltip: 'Show Logging History', fn: () -> log.print! }
+      { id: "Open History", image: R('log.png'), tooltip: 'Open Log File', fn: log.openhistory }
       { id: "Top", image: R('ontop.png'), tooltip: 'Always On Top', fn: () -> console.alwaysOnTop(not console.alwaysOnTop!) }
       { id: "List Daemons", image: R('list.png'), tooltip: 'List Running Services', fn: () -> print(daemon.status! .. '\n') }
       { id: "NSToolbarSpaceItem", default: false }

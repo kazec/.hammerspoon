@@ -36,7 +36,7 @@ HIST_FILE_SIZE = 2 * 1024 * 1024
 
 checkers['log.level'] = (v) -> LEVELS[v] != nil
 
-_lvl = LEVELS['warn']
+_lvl = _DEBUG and LEVELS['trace'] or LEVELS['info']
 _tohistlvl = nil
 _tocli = false
 _toconsole = true
@@ -45,6 +45,8 @@ loggers = {}
 history = {}
 histfile = nil
 histfpath = nil
+
+openhistory = () -> hs.open histfpath if histfpath
 
 log2console = (lvl, msg) ->
   console.printStyledtext(styledtext.new(msg, {
@@ -149,6 +151,7 @@ new = (id, level, tohist) ->
     update: logger_update
     level: T '?, ?log.level', logger_level
     tohistory: T '?, ?boolean|log.level', logger_tohistory
+    openhistory: openhistory
   }), {
     __index: T '?, string', (key) =>
       lvl = LEVELS_WF[key]
@@ -226,12 +229,26 @@ tofile = (path) ->
   error 'Unable to open logging history file at path : ' .. path unless histfile
   histfpath = path
 
+start = () ->
+  TO_HS_LEVEL = {
+    error: 'error'
+    warning: 'warning'
+    info: 'info'
+    debug: 'debug'
+    trace: 'verbose'
+  }
+
+  hs_lvl = TO_HS_LEVEL[level!]  
+  hs.logger.setGlobalLogLevel hs_lvl
+
 stop = () ->
   if histfile
     histfile\write '\n\nSEE YOU COWBOY, SOMEDAY SOMEWHERE!\n'
     histfile\flush!
     histfile\close!
     histfile = nil
+
+  hs.logger.setGlobalLogLevel 'nothing'
 
 ---------------------------------------------------------------------------
 -- Interface --------------------------------------------------------------
@@ -246,5 +263,5 @@ stop = () ->
   tofile:    T 'string', once(tofile)
   tohistory: T '?boolean|log.level', tohistory
   print:     T '?string, ?string', print
-  :stop
+  :start, :stop, :openhistory
 }

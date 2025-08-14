@@ -184,7 +184,7 @@ local function makeMouseHoverCallback(mouseHover)
                   return mouseHover[i + 1]
                end
             else
-               i = i + (flag & 4 == 4 and 3 or 2) -- 4 set then interval or delay
+               i = i + (flag & 4 == 4 and 3 or 2) -- 4 set the interval or delay
             end
             flag = mouseHover[i]
          until not flag

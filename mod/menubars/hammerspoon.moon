@@ -45,6 +45,8 @@ MENU = {
       { title: '-' }
       { title: 'Dark Mode', checked: nil, fn: toggle console.darkMode }
       { title: 'Always on Top', checked: nil, fn: toggle console.alwaysOnTop }
+      { title: '-' }
+      { title: 'Open Log File', fn: log.openhistory }
     }
     fn: console.open
   }

@@ -3,10 +3,9 @@
 -- dofile './debug.moon'
 
 with require 'log'
-  .level 'info'
   .tocli false
   .toconsole true
-  .tohistory 'warn'
+  .tohistory 'info'
   .tofile os.getenv('HOME') .. '/Library/Logs/org.hammerspoon.log'
 
 -- Load Modules -----------------------------------------------------------
