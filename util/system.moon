@@ -23,10 +23,10 @@ app = require 'hs.application'
 
 SH_OPEN_SSE = 'open -a ScreenSaverEngine'
 SH_DSPL_SLEEP = 'pmset displaysleepnow'
-SH_LOCK = '/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 SH_KILL_DOCK = 'killall Dock'
 SH_KILL_FINDER = 'killall Finder'
 SH_RESET_DOCK = 'defaults delete com.apple.dock && killall Dock'
+AS_LOCK = 'tell application "System Events" to key code 12 using {control down, command down}'
 AS_SLEEP = 'tell application "System Events" to sleep'
 AS_LOGOUT = 'tell application "System Events" to log out'
 AS_RESTART = 'tell application "System Events" to restart'
@@ -134,7 +134,7 @@ finderToggleHidden = () ->
 
   display:
     sleep:     partial execute, SH_DSPL_SLEEP
-    lock:      partial execute, SH_LOCK
+    lock:      partial applescript, AS_LOCK
 
   darkmode:
     toggle:    partial applescript, AS_TOGGLE_DM

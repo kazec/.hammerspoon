@@ -95,9 +95,11 @@ window = load 'window', () =>
   -- switch focused window between screens
   bind '', 'f13', partial(@screen.focused, true)
 
-  -- f14, mapped to esc
+  -- f19, mapped to x
   -- center focused window
-  bind '', 'f20', partial(@focused, @layout.center)
+  bind '', 'f19', partial(@focused, @layout.center)
+
+  -- f14, mapped to esc
   -- animation disabled zoom
   bind '⌥', 'f14', partial(@zoom, 0.75)
   -- snap and resize focused window to prefined grids
@@ -238,6 +240,26 @@ hotcorners = load 'hotcorners',
             audioDevice\setOutputVolume(volume + (deltaY < 0 and 1 or -1))
       }
     }
+  'bottom-right':
+    'mouse-hover': {
+      { modifiers: 'fn', fn: () -> doAfter 1, sys.sleep }
+      { modifiers: '⌃', fn: sys.display.lock }
+      { modifiers: '⌃+⌥', fn: sys.display.sleep }
+      { modifiers: 0, delay: 5, fn: sys.screensaver }
+    }
+    'left-click': {
+      { modifiers: 0, fn: partial console.toggle, false }
+    }
+    'double-click': {
+      { modifiers: '⌘', fn: partial ds4irc.start, '192.168.1.202', 4950 }
+      { modifiers: 0, fn: hs.reload }
+    }
+    'right-click': {
+      { modifiers: 'fn', fn: sys.logout }
+      { modifiers: '⌃', fn: sys.shutdown }
+      { modifiers: '⌃+⌥', fn: sys.restart }
+    }
+  
 
 menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
   main:
