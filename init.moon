@@ -6,7 +6,7 @@ with require 'log'
   .tocli false
   .toconsole true
   .tohistory 'info'
-  .tofile os.getenv('HOME') .. '/Library/Logs/org.hammerspoon.log'
+  .tofile "#{os.getenv('HOME')}/Library/Logs/org.hammerspoon.log"
 
 -- Load Modules -----------------------------------------------------------
 
@@ -26,7 +26,7 @@ with require 'hs'
     .reloading = true
     reload!
 
-  .fs.rmdir .configdir .. '/Spoons'
+  .fs.rmdir "#{.configdir}/Spoons"
 
   .shutdownCallback = ->
     .notify.withdrawAll!

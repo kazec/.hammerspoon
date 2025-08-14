@@ -14,12 +14,12 @@ import imageFromPath from require 'hs.image'
 -- Implementation ---------------------------------------------------------
 ---------------------------------------------------------------------------
 
-ASSETS_DIR = configdir .. '/assets'
+ASSETS_DIR = "#{configdir}/assets"
 
-path = (name) -> ASSETS_DIR .. '/' .. name
+path = (name) -> "#{ASSETS_DIR}/#{name}"
 
 load = (p, arg) ->
-  p = ASSETS_DIR .. '/' .. p unless byte(p) == 47 -- '^/'
+  p = "#{ASSETS_DIR}/#{p}" unless byte(p) == 47 -- '^/'
   sub4 = sub p, -4
   sub5 = sub p, -5
   -- If the requested asset is an image.
@@ -27,7 +27,7 @@ load = (p, arg) ->
      sub4 == '.bmp' or sub5 == '.jpeg' or sub5 == '.icns'
     -- load asset as an hs.image object.
     success, result = pcall imageFromPath, p
-    error 'Failed to load image at path: ' .. p unless success
+    error "Failed to load image at path: #{p}" unless success
     result\size arg, true if arg
     return result
   elseif sub4 == '.lua' or sub5 == '.moon'

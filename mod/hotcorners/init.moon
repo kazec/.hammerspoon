@@ -194,17 +194,17 @@ loadAction = (event, action) ->
   modifiers = action.modifiers or false
   return switch event
     when 'left-click', 'right-click', 'double-click', 'scroll-wheel'
-      { modifiers, event, action.fn or error(event .. ' action\'s fn expect a function') }
+      { modifiers, event, action.fn or error("#{event} action's fn expect a function") }
     when 'mouse-hover'
       if action.interval
-        { modifiers, event, { interval: action.interval, fn: action.fn or error(event .. ' action\'s fn expect a function') } }
+        { modifiers, event, { interval: action.interval, fn: action.fn or error("#{event} action's fn expect a function") } }
       elseif action.delay
-        { modifiers, event, { delay: action.delay, fn: action.fn or error(event .. ' action\'s fn expect a function') } }
+        { modifiers, event, { delay: action.delay, fn: action.fn or error("#{event} action's fn expect a function") } }
       elseif action.sequences
         { modifiers, event, action.sequences }
       else
-        { modifiers, event, action.fn or error(event .. ' action\'s fn expect a function') }
-    else error 'Unrecognized event: ' .. event
+        { modifiers, event, action.fn or error("#{event} action's fn expect a function") }
+    else error "Unrecognized event: #{event}"
 
 loadActions = (actions) ->
   result = {}

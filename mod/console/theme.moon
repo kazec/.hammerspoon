@@ -41,7 +41,7 @@ apply = (t) ->
 
 set = (new) ->
   if new != current
-    log.info 'Switching to new console theme : ' .. new if log.info
+    log.infof 'Switching to new console theme: %s', new if log.info
     apply themes[new]
     current = new
 

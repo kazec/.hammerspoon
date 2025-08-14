@@ -23,8 +23,12 @@ self =
   _watcher: nil
   _callbacks: nil
 
-bind = (appID, callback) ->
-  @_callbacks[appID] = callback
+bind = (appID, eventName, callback) ->
+  callbackFound = @_callbacks[appID]
+  if not callbackFound
+    callbackFound = {}
+    @_callbacks[appID] = callbackFound
+  callbackFound[eventName] = callback
 
 watcherCallback = (appName, eventType, appObj) ->
   appID = appObj\bundleID!
@@ -33,27 +37,20 @@ watcherCallback = (appName, eventType, appObj) ->
   
   callbackFound = @_callbacks[appID]
   return unless callbackFound
-  
+
   eventName = EVENT_MAP[eventType]
   return unless eventName
 
-  log.infof 'App Event Callback: %s %s', appID, eventName if log.infof
-
-  if isfunction callbackFound
-    callbackFound appObj, eventName
-  else if istable callbackFound
-    callback = callbackFound[eventName]
-    callback appObj if callback
-  else
-    log.errorf 'Invalid callback type: %s', type callbackFound
-
-init = (options) ->
-  @_callbacks = {}
-
-  for appID, callback in pairs options
-    @.bind appID, callback
+  callback = callbackFound[eventName]
+  return unless callback
   
+  log.infof 'App Event Callback: %s %s', appID, eventName if log.infof
+  callback appObj
+
+init = (func) ->
+  @_callbacks = {}
   @_watcher = AppWatcher.new watcherCallback
+  func self
 
 start = () -> @_watcher\start!
 stop = () -> @_watcher\stop!
@@ -63,7 +60,7 @@ stop = () -> @_watcher\stop!
 ---------------------------------------------------------------------------
 
 merge self, {
-  init: T 'table', init
+  init: T 'function', init
   bind: T 'string, table|function', bind
   :start, :stop
 }

@@ -40,10 +40,10 @@ makemenu = (shortcuts, shownpp, modifiers) ->
     toggleTitle = 'Turn Auto Proxy Off'
     toggleFn = autoproxy.off
     if p
-      status = 'Auto Proxy: '  .. capitalize(p) if p
+      status = "Auto Proxy: #{capitalize p}" if p
     else
       status = 'Auto Proxy: On'
-      substatus = 'URL: ' .. url
+      substatus = "URL: #{url}"
   else
     toggleTitle = 'Turn Auto Proxy On'
     status = 'Auto Proxy: Off'
@@ -61,7 +61,7 @@ makemenu = (shortcuts, shownpp, modifiers) ->
           checked: @ == p
           fn: partial autoproxy.on, @
           menu: {
-            { title: 'URL: ' .. url, disabled: true }
+            { title: "URL: #{url}", disabled: true }
             { title: 'Copy', fn: () -> setPasteboard url }
           }
         }

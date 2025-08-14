@@ -3,6 +3,7 @@
 ---------------------------------------------------------------------------
 
 import ipairs from _G
+log = require('log').get 'watchers'
 { sigcheck:T } = require 'typecheck'
 import ieach, ieachr, merge from require 'fn.table'
 
@@ -15,7 +16,8 @@ self =
 
 init = (submods, options) ->
   for _, modname in ipairs submods
-    mod = require 'watchers.' .. modname
+    log.infof 'Initializing watcher: %s', modname if log.infof
+    mod = require "watchers.#{modname}"
     mod.init options[modname]
     @[modname] = mod
   @_submods = submods

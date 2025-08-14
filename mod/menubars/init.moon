@@ -69,8 +69,8 @@ init = (submods, options) ->
     @_submods = submods
     for _, modname in ipairs submods
       @new = mainItems and indexof(mainItems, modname) and newMenuItem or newBarItem
-      mod = require 'menubars.' .. modname
-      log.error 'Unable to load submodule: ' .. modname unless mod
+      mod = require "menubars.#{modname}"
+      log.errorf 'Unable to load submodule: %s', modname unless mod
       mod.init options[modname]
       @[modname] = mod
     @new = nil

@@ -74,7 +74,7 @@ console = load 'console',
       { id: "Shown History", image: R('history.png'), tooltip: 'Show Logging History', fn: () -> log.print! }
       { id: "Open History", image: R('log.png'), tooltip: 'Open Log File', fn: log.openhistory }
       { id: "Top", image: R('ontop.png'), tooltip: 'Always On Top', fn: () -> console.alwaysOnTop(not console.alwaysOnTop!) }
-      { id: "List Daemons", image: R('list.png'), tooltip: 'List Running Services', fn: () -> print(daemon.status! .. '\n') }
+      { id: "List Daemons", image: R('list.png'), tooltip: 'List Running Services', fn: () -> print("#{daemon.status!}\n") }
       { id: "NSToolbarSpaceItem", default: false }
     }
     setup:
@@ -260,8 +260,7 @@ hotcorners = load 'hotcorners',
       { modifiers: '⌃+⌥', fn: sys.restart }
     }
   
-
-menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
+menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' },
   main:
     flatten: true
     items: { 'volume', 'hammerspoon' }
@@ -296,46 +295,39 @@ menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
   hammerspoon:
     configEditor: '/usr/local/bin/atom'
     consoleAlphaValues: { 0.25, 0.50, 0.75, 1.00 }
-}
-
-notesTimer = nil
 
 watchers: load 'watchers', { 'config', 'app', 'usb' },
   config: { '/Spoons' , '/assets/', '/ext/', '/%.DS_Store', '/%.git' }
-  app:
-    'com.apple.Notes':
-      activated: () ->
-        notesTimer\stop! if notesTimer
-        notesTimer = nil
-        -- open ProNotes if Notes is activated
-        id = 'com.dexterleng.ProNotes' 
-        hs.application.open id unless hs.application.get id
-      deactivated: (app) ->
-        -- close ProNotes if Notes is deactivated after 60 seconds
-        notesTimer = doAfter 60, () ->
-          if not app or not app\isFrontmost!
-            pronotes = hs.application.get 'com.dexterleng.ProNotes'
-            pronotes\kill! if pronotes
-  -- wifi:
-  usb:
-    'Poker':
-      connected: partial exec, [[
-        /usr/local/bin/karabiner_cli --select-profile 'Poker'
-      ]]
-      disconnected: partial exec, [[
-        /usr/local/bin/karabiner_cli --select-profile 'AIK'
-      ]]
-    'Poker II':
-      connected: partial exec, [[
-        /usr/local/bin/karabiner_cli --select-profile 'Poker'
-      ]]
-      disconnected: partial exec, [[
-        /usr/local/bin/karabiner_cli --select-profile 'AIK'
-      ]]
-    -- 'Wireless Controller':
-    --   connected: () -> -- some delay is needed
-    --     usleep(100000)
-    --     ds4irc.start '192.168.1.202', 4950
-    --   disconnected: ds4irc.stop
+  app: () =>
+    timer = nil
+    pronotesid = 'com.dexterleng.ProNotes' 
+    @bind 'com.apple.Notes', 'activated', () ->
+      timer\stop! if timer
+      timer = nil
+      -- open ProNotes if Notes is activated
+      hs.application.open pronotesid unless hs.application.get pronotesid
+    @bind 'com.apple.Notes', 'deactivated', (app) ->
+      -- close ProNotes if Notes is deactivated after 60 seconds
+      timer = doAfter 60, () ->
+        if not app or not app\isFrontmost!
+          pronotes = hs.application.get 'com.dexterleng.ProNotes'
+          pronotes\kill! if pronotes
+  usb: () =>
+    @bind 'Poker', 'connected', partial exec, [[
+      /usr/local/bin/karabiner_cli --select-profile 'Poker'
+    ]]
+    @bind 'Poker', 'disconnected', partial exec, [[
+      /usr/local/bin/karabiner_cli --select-profile 'AIK'
+    ]]
+    @bind 'Poker II', 'connected', partial exec, [[
+      /usr/local/bin/karabiner_cli --select-profile 'Poker'
+    ]]
+    @bind 'Poker II', 'disconnected', partial exec, [[
+      /usr/local/bin/karabiner_cli --select-profile 'AIK'
+    ]]
+    -- @bind 'Wireless Controller', 'connected', () ->
+    --   usleep 100000
+    --   ds4irc.start '192.168.1.202', 4950
+    -- @bind 'Wireless Controller', 'disconnected', ds4irc.stop
 
 return fn.table.merge { :fn, :sh, :sys, :R, :C, :daemon, :ds4irc }, daemon.modules!

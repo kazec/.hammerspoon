@@ -16,26 +16,26 @@ self =
   _watcher: nil
   _callbacks: nil
 
-bind = (productName, connected, disconnected) ->
-  @_callbacks[productName] = { connected, disconnected }
+bind = (productName, eventName, callback) ->
+  callbackFound = @_callbacks[productName]
+  if not callbackFound
+    callbackFound = {}
+    @_callbacks[productName] = callbackFound
+  callbackFound[eventName] = callback
 
 watcherCallback = (event) ->
   with event
     log.infof 'USB Device: %q(%d) - %q(%d) %s', .productName, .productID, .vendorName, .vendorID, .eventType\upper! if log.infof
 
     if callbackFound = @_callbacks[.productName]
-      callback = callbackFound[.eventType == 'added' and 1 or 2]
+      eventName = .eventType == 'added' and 'connected' or 'disconnected'
+      callback = callbackFound[eventName]
       callback event if callback
 
-init = (options) ->
+init = (func) ->
   @_callbacks = {}
-  for productName, callbackPair in pairs options
-    if isfunction callbackPair
-      @.bind productName, callbackPair, nil
-    else
-      @.bind productName, callbackPair.connected, callbackPair.disconnected
-
   @_watcher = USBWatcher watcherCallback
+  func self
 
 start = () -> @_watcher\start!
 stop = () -> @_watcher\stop!
@@ -45,7 +45,7 @@ stop = () -> @_watcher\stop!
 ---------------------------------------------------------------------------
 
 merge self, {
-  init: T 'table', init
-  bind: T 'string, function, ?function', bind
+  init: T 'function', init
+  bind: T 'string, ?function, ?function', bind
   :start, :stop
 }

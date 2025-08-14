@@ -26,7 +26,7 @@ route = (_, host, params, url, rules) ->
        elseif isfunction r.dest
          return r.dest host, params, url
        else
-         log.warn 'Invalid rule destination: ' .. tostring(r.dest)
+         log.warnf 'Invalid rule destination: %s', tostring(r.dest)
   log.warnf 'Unable to route HTTP URL: %q', url if log.warnf
 
 init = (router) ->

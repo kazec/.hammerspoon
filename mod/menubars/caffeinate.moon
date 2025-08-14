@@ -31,15 +31,14 @@ minutesToStr = (minutes) ->
 
   hours = floor minutes / 60
   minutes = minutes - hours * 60
-  return if minutes == 0 then format('%.d hour', hours) .. (hours == 1 and '' or 's')
-  elseif hours == 0 then format('%.d minute', minutes) .. (minutes == 1 and '' or 's')
-  else format('%.d hour', hours) .. (hours == 1 and '' or 's') ..
-    format(' %.d minute', minutes) .. (minutes == 1 and '' or 's')
+  return if minutes == 0 then format('%.d hour%s', hours, hours == 1 and '' or 's')
+  elseif hours == 0 then format('%.d minute%s', minutes, minutes == 1 and '' or 's')
+  else format('%.d hour%s %.d minute%s', hours, hours == 1 and '' or 's', minutes, minutes == 1 and '' or 's')
 
 on = (minutes, hint) ->
   minutes or= -1
   hint or= minutesToStr(minutes)
-  log.info 'Starting caffeination: ' .. hint if log.info
+  log.infof 'Starting caffeination: %s', hint if log.info
   preventIdleDisplaySleep!
   @_menuItem\setIcon @_onIcon
 
@@ -68,7 +67,7 @@ status = (tostr) ->
   return seconds unless tostr
   return 'Caffeination: Less than one minute' if seconds < 60
   minutes = ceil seconds / 60
-  return 'Caffeination: ' .. minutesToStr(minutes) .. ' remaining'
+  return "Caffeination: #{minutesToStr(minutes)} remaining"
 
 makeMenu = (minutes, durations, esaver, modifiers) ->
   -- toggle the status if option key is down
@@ -112,12 +111,12 @@ init = (options) ->
     -- Get previous activation info.
     menu = partial makeMenu, .toggle or -1, durations, .showEnergySaverPreferences != false
     timerCallback = not .notifyOnCompletion and off or () ->
-      notify 'Caffeination Ended', '', 'Duration: ' .. minutesToStr(@_activation.duration / 60)
+      notify 'Caffeination Ended', '', "Duration: #{minutesToStr(@_activation.duration / 60)}"
       sound.getByName('Glass')\play!
       off!
     if activation = settings.get 'menubars.caffeinate.activation'
       if activation.duration < 0
-        log.debugf 'Restoring previous caffeination session: %s' .. minutesToStr(activation.duration / 60) if log.debugf
+        log.debugf "Restoring previous caffeination session: #{minutesToStr(activation.duration / 60)}" if log.debugf
         preventIdleDisplaySleep!
         @_menuItem = menubars.new @_onIcon, title, menu
         @_timer = Timer 0, timerCallback
@@ -126,7 +125,7 @@ init = (options) ->
       else
         remaining = activation.since + activation.duration - time!
         if remaining > 0
-          log.debugf 'Restoring previous caffeination session: %s' .. minutesToStr(activation.duration / 60) if log.debugf
+          log.debugf "Restoring previous caffeination session: #{minutesToStr(activation.duration / 60)}" if log.debugf
           preventIdleDisplaySleep!
           @_menuItem = menubars.new @_onIcon, title, menu
           @_timer = Timer(remaining, timerCallback)\start!

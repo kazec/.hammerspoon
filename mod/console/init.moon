@@ -41,7 +41,7 @@ buildcompletions = (modpairs) ->
   for n, m in pairs modpairs
     for k, v in pairs m
       comp = result[k]
-      newcomp = n .. '.' .. (isfunction(v) and k .. '()' or k)
+      newcomp = "#{n}.#{if isfunction(v) then "#{k}()" else k}"
       if comp
         comp[#comp + 1] = newcomp
         result[k] = comp
@@ -109,7 +109,7 @@ init = (options) ->
   if frame and settings.get 'hs.reloaded'
     @.open!
     if window = @.hswindow!
-      log.debug 'Restoring to previous window frame : ' .. tostring(frame) if log.debug
+      log.debugf 'Restoring to previous window frame: %s', tostring(frame) if log.debug
       window\setFrame rect frame._x, frame._y, frame._w, frame._h
 
 stop = () ->

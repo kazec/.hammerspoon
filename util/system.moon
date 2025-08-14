@@ -50,27 +50,27 @@ defaults = (domain, key, type, newvalue) ->
       when 'int', 'float' then tonumber output
       else success and output or nil
 
-plistpath = (label, dir = '~/Library/LaunchAgents') -> dir .. '/' .. label .. '.plist'
+plistpath = (label, dir = '~/Library/LaunchAgents') -> "#{dir}/#{label}.plist"
 
 darkmode = (flag) ->
   if flag != nil
-    print 'Application("System Events").appearancePreferences.darkMode = ' .. tostring(flag)
-    javascript 'Application("System Events").appearancePreferences.darkMode = ' .. tostring(flag)
+    print "Application('System Events').appearancePreferences.darkMode = #{tostring(flag)}"
+    javascript "Application('System Events').appearancePreferences.darkMode = #{tostring(flag)}"
   else
     _, result = javascript 'Application("System Events").appearancePreferences.darkMode()'
     result
 
 wallpaper = (path) ->
-  return execute 'sqlite3 ' .. '~/Library/Application\\ Support/Dock/desktoppicture.db "update data set value = \'' .. escape(path) .. '\'" && killall Dock'
+  return execute "sqlite3 '~/Library/Application\\ Support/Dock/desktoppicture.db' 'update data set value = \"#{escape(path)}\"' && killall Dock"
 
 safari = (attr) ->
   attr = attr == 'title' and 'name' or attr or 'URL'
-  _, output = applescript 'tell application "Safari" to get ' .. attr .. ' of current tab of front window'
+  _, output = applescript "tell application 'Safari' to get #{attr} of current tab of front window"
   return output
 
 chrome = (attr) ->
-  attr = 'document.' .. attr
-  _, output = applescript 'tell application "Google Chrome" to set source to execute front window\'s active tab javascript "' .. attr .. '"'
+  attr = "document.#{attr}"
+  _, output = applescript "tell application 'Google Chrome' to set source to execute front window's active tab javascript '#{attr}'"
   return output
 
 reindexmails = () ->
@@ -118,6 +118,9 @@ finderToggleHidden = () ->
   if finder
     finder\kill!
     execute '(sleep 0.5; open -a Finder; open -a Finder) &'
+
+finderSetDesktopPicture = (path) ->
+  applescript "tell application 'Finder' to set desktop picture to POSIX file '#{escape(path)}'"
 
 ---------------------------------------------------------------------------
 -- Interface --------------------------------------------------------------
@@ -176,6 +179,7 @@ finderToggleHidden = () ->
     showPathBar: T '?boolean', partial defaults, 'com.apple.dock', 'ShowPathbar', 'bool'
     showStatusBar: T '?boolean', partial defaults, 'com.apple.dock', 'ShowStatusbar', 'bool'
     toggleHidden: finderToggleHidden
+    setDesktopPicture: T 'string', finderSetDesktopPicture
 
   mails:
     reindex: reindexmails

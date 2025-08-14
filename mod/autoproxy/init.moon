@@ -93,7 +93,7 @@ status = (tostr) ->
 on = (p) ->
   p or= (status!) or settings.get 'autoproxy.profile'
   log.errorf 'Please specify a profile to use, candidates are: \n%s', profiles! unless p
-  log.info 'Switing to profile: ' .. p if log.info
+  log.info "Switing to profile: #{p}" if log.info
 
   networksetup '-setautoproxyurl', makeurl(@_server, p)
   networksetup '-setautoproxystate', false
@@ -115,17 +115,17 @@ toggle = () ->
     on profile
 
 test = (url, host, p) ->
-  url = 'http://' .. url unless url\find 'http://', nil, true
+  url = "http://#{url}" unless url\find 'http://', nil, true
   host = host or urlparts(url).host
-  log.error 'Unable to extract host from possibly malformed URL:\n' .. url unless host
+  log.errorf 'Unable to extract host from possibly malformed URL:\n%s', url unless host
 
   p or= (status!)
   log.errorf 'Please specify a profile name to test against, candidates are:\n%s', keys @_profiles unless p
 
-  log.infof 'Testing with profile: ' .. p .. '\nURL: ' .. url .. '\nHOST: ' .. host
-  tester = 'function isPlainHostName(a){return !a.includes(".");}' .. @_profiles[p] .. format 'FindProxyForURL(%q,%q);', url, host
+  log.infof 'Testing with profile: %s\nURL: %s\nHOST: %s', p, url, host
+  tester = "function isPlainHostName(a){return !a.includes(\".\");}#{@_profiles[p]}#{format 'FindProxyForURL(%q,%q);', url, host}"
   success, result, err = javascript tester
-  log.error 'An exception has occured: \n%s' .. err unless success
+  log.error "An exception has occured: #{err}" unless success
 
   return result
 
@@ -161,7 +161,7 @@ start = () ->
     if method == 'GET'
       if prof = path\match '^/(%a+)'
         if resp = @_profiles[prof]
-          log.debugf 'Response: ' .. prof if log.debugf
+          log.debugf 'Response: %s', prof if log.debugf
           return resp, 200, {}
     log.debugf 'Invalid HTTP request: %s, "%s"', method, path if log.debugf
     return 'Invalid Request', 400, {}

@@ -19,7 +19,7 @@ styledtext, ipc, console = vmap require, 'hs.styledtext', 'hs.ipc', 'hs.console'
 
 LEVEL_KEYS = { 'trace', 'debug', 'info', 'warn', 'error' }
 LEVELS = { 'trace': 1, 'debug': 2, 'info': 3, 'warn': 4, 'error': 5 }
-LEVELS_WF = merge { k .. 'f', v for k, v in pairs LEVELS }, LEVELS
+LEVELS_WF = merge { "#{k}f", v for k, v in pairs LEVELS }, LEVELS
 MIN_LEVEL, MAX_LEVEL, ERROR_LEVEL = LEVELS['trace'], LEVELS['error'], LEVELS['error']
 
 CONSOLE_COLORS = imap({ '#6a7c81', '#359774', '#009cc7', '#db7c00', '#ff2424', '#d10000' }, (h) -> { hex: h })
@@ -57,7 +57,7 @@ log2console = (lvl, msg) ->
 -- Print log message to remote ipc client if present.
 -- From https://github.com/Hammerspoon/hammerspoon/blob/master/extensions/ipc/init.lua#L363
 log2cli = (lvl, msg) ->
-  msg = '\n' .. CLI_COLORS[lvl] .. msg
+  msg = "\n#{CLI_COLORS[lvl]}#{msg}"
   for k,v in pairs ipc.__registeredCLIInstances do
     v.print msg if v._cli.console and v.print and not v._cli.quietMode
 
@@ -100,8 +100,8 @@ logger_update = () =>
         log2prompt lvl, msg
         log2history id, lvl, msg
         error! if lvl >= ERROR_LEVEL
-      @[key .. 'f'] = (fmt, ...) ->
-        msg = format LOG_FMTF .. fmt, date(DATE_FMT), ukey, id, vmap(tostr, ...)
+      @["#{key}f"] = (fmt, ...) ->
+        msg = format "#{LOG_FMTF}#{fmt}", date(DATE_FMT), ukey, id, vmap(tostr, ...)
         log2prompt lvl, msg
         log2history id, lvl, msg
         error! if lvl >= ERROR_LEVEL
@@ -110,8 +110,8 @@ logger_update = () =>
         msg = format LOG_FMT, date(DATE_FMT), ukey, id, msg
         log2history id, lvl, msg
         error! if lvl >= ERROR_LEVEL
-      @[key .. 'f'] = (fmt, ...) ->
-        msg = format LOG_FMTF .. fmt, date(DATE_FMT), ukey, id, vmap(tostr, ...)
+      @["#{key}f"] = (fmt, ...) ->
+        msg = format "#{LOG_FMTF}#{fmt}", date(DATE_FMT), ukey, id, vmap(tostr, ...)
         log2history id, lvl, msg
         error! if lvl >= ERROR_LEVEL
     elseif toprompt
@@ -119,13 +119,13 @@ logger_update = () =>
         msg = format LOG_FMT, date(DATE_FMT), ukey, id, msg
         log2prompt lvl, msg
         error! if lvl >= ERROR_LEVEL
-      @[key .. 'f'] = (fmt, ...) ->
-        msg = format LOG_FMTF .. fmt, date(DATE_FMT), ukey, id, vmap(tostr, ...)
+      @["#{key}f"] = (fmt, ...) ->
+        msg = format "#{LOG_FMTF}#{fmt}", date(DATE_FMT), ukey, id, vmap(tostr, ...)
         log2prompt lvl, msg
         error! if lvl >= ERROR_LEVEL
     else
       @[key] = nil
-      @[key .. 'f'] = nil
+      @["#{key}f"] = nil
 
 logger_level = (key) =>
   return @_lvl <= MAX_LEVEL and @_lvl or _lvl unless key
@@ -226,7 +226,7 @@ print = (level, id) ->
 
 tofile = (path) ->
   histfile = open path, 'a'
-  error 'Unable to open logging history file at path : ' .. path unless histfile
+  error "Unable to open logging history file at path: #{path}" unless histfile
   histfpath = path
 
 start = () ->

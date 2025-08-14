@@ -30,7 +30,7 @@ load = (modname, ...) ->
 start = (modname) ->
   trystart = (info) ->
     if isfunction info.mod.start
-      log.info 'Starting module: ' .. info.name if log.info
+      log.infof 'Starting module: %s', info.name if log.info
       info.mod.start!
       info.status = if isfunction info.mod.stop then 'active running' else 'started'
       info.timestamp = date '%Y-%m-%d %H:%M:%S'
@@ -45,7 +45,7 @@ start = (modname) ->
 stop = (modname) ->
   trystop = (info) ->
     if isfunction info.mod.stop
-      log.info 'Stopping module: ' .. info.name if log.info
+      log.infof 'Stopping module: %s', info.name if log.info
       info.mod.stop!
       info.status = 'stopped'
       info.timestamp = date '%Y-%m-%d %H:%M:%S'
@@ -62,16 +62,16 @@ restart = (modname) ->
   log.error 'Unable to find module "%s".', modname if info == nil
 
   if isfunction info.mod.restart
-    log.info 'Restarting module: ' .. info.name if log.info
+    log.infof 'Restarting module: %s', info.name if log.info
     prevstatus = info.status
     info.status = 'restarting'
     info.mod.restart!
     info.status = prevstatus
   elseif isfunction info.mod.stop and isfunction info.mod.start
-    log.info 'Stopping module: ' .. info.name if log.info
+    log.infof 'Stopping module: %s', info.name if log.info
     info.mod.stop!
     info.status = 'stopped'
-    log.info 'Starting module: ' .. info.name if log.info
+    log.infof 'Starting module: %s', info.name if log.info
     info.mod.start!
     info.status = 'active running'
     info.timestamp = date '%Y-%m-%d %H:%M:%S'

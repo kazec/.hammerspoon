@@ -19,7 +19,7 @@ defaultPalette = palettes.x11
 hex = (h) ->
   switch hex\len()
     when 4, 7 then { hex: h }
-    when 9 then { hex: h\sub(1, 7), alpha: tonumber('0x' .. h\sub(8, 9) / 255) }
+    when 9 then { hex: h\sub(1, 7), alpha: tonumber("0x#{h\sub(8, 9)}" / 255) }
 
 name = (n) ->
   c = defaultPalette[n]

@@ -18,7 +18,7 @@ log = require('log').get 'shell'
 
 escape = (str) ->
   if find str, '[^a-zA-Z0-9,._+:@%/-]'
-    "'" .. gsub(str, "'", "'\\''") .. "'"
+    "'#{gsub(str, "'", "'\\''")}'"
   else str
 
 concat = (...) ->
@@ -29,7 +29,7 @@ concat = (...) ->
 run = (...) ->
   args = {...}
   cmd = #args == 1 and args[1] or concat args
-  log.trace 'Running shell command:\n ' .. cmd if log.trace
+  log.tracef 'Running shell command:\n %s', cmd if log.tracef
   handle = popen cmd
   output = handle\read '*a'
   success, status, code = handle\close!
@@ -39,7 +39,7 @@ run = (...) ->
 execute = (...) ->
   args = {...}
   cmd = #args == 1 and args[1] or concat args
-  log.trace 'Executing shell command:\n' .. cmd if log.trace
+  log.tracef 'Executing shell command:\n %s', cmd if log.tracef
   return exec cmd
 
 script_path = () -> debug.getinfo(2, "S").source\sub(2)\match("(.*/)")

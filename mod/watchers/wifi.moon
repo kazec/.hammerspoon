@@ -18,8 +18,12 @@ self =
   _callbacks: nil
   _lastSSID: nil
 
-bind = (ssid, connected, disconnected) ->
-  @_callbacks[ssid] = { connected, disconnected }
+bind = (ssid, eventName, callback) ->
+  callbackFound = @_callbacks[ssid]
+  if not callbackFound
+    callbackFound = {}
+    @_callbacks[ssid] = callbackFound
+  callbackFound[eventName] = callback
 
 watcherCallback = () ->
   currentSSID = currentNetwork!
@@ -29,26 +33,23 @@ watcherCallback = () ->
 
   callbackFound = @_callbacks[@_lastSSID]
   if callbackFound
-    disconnected = callbackFound[2]
-    disconnected @_lastSSID, currentSSID if disconnected
+    eventName = 'disconnected'
+    callback = callbackFound[eventName]
+    callback @_lastSSID, currentSSID if callback
 
   callbackFound = @_callbacks[currentSSID]
   if callbackFound
-    connected = callbackFound[1]
-    connected @_lastSSID, currentSSID if connected
+    eventName = 'connected'
+    callback = callbackFound[eventName]
+    callback @_lastSSID, currentSSID if callback
 
   @_lastSSID = currentSSID
 
-init = (options) ->
+init = (func) ->
   @_callbacks = {}
-  for ssid, callbackPair in pairs options
-    if isfunction callbackPair
-      @.bind ssid, callbackPair, nil
-    else
-      @.bind ssid, callbackPair.connected, callbackPair.disconnected
-
   @_lastSSID = currentNetwork!
   @_watcher = WifiWatcher watcherCallback
+  func self
 
 start = () -> @_watcher\start!
 stop = () -> @_watcher\stop!
@@ -58,7 +59,7 @@ stop = () -> @_watcher\stop!
 ---------------------------------------------------------------------------
 
 merge self, {
-  init: T 'table', init
-  bind: T 'string, function, ?function', bind
+  init: T 'function', init
+  bind: T 'string, function', bind
   :start, :stop
 }

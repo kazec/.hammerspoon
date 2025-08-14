@@ -38,7 +38,7 @@ menuItem = nil
 CAPACITY_UNITS = { 'bytes', 'kb', 'MB', 'GB', 'TB', 'PB' }
 makeCapacityDesc = (bytes) ->
   pow = floor mlog(bytes) / mlog(1000)
-  return format '%.3f' .. CAPACITY_UNITS[pow + 1], bytes / (1000 ^ pow)
+  return format '%.3f%s', bytes / (1000 ^ pow), CAPACITY_UNITS[pow + 1]
 
 makeUsageDesc = (total, available, showTotal) ->
   used = total - available
@@ -81,9 +81,9 @@ makeDetailedVolumeItem = (path, volume, flat) ->
   internal = volume.NSURLVolumeIsInternalKey
   ejectable = volume.NSURLVolumeIsEjectableKey
 
-  usage = 'Usage: ' .. makeUsageDesc(total, available, false)
-  capacity = 'Capacity: ' .. makeCapacityDesc(total)
-  fs = 'File System: ' .. volume.NSURLVolumeLocalizedFormatDescriptionKey
+  usage = "Usage: #{makeUsageDesc(total, available, false)}"
+  capacity = "Capacity: #{makeCapacityDesc(total)}"
+  fs = "File System: #{volume.NSURLVolumeLocalizedFormatDescriptionKey}"
 
   removal = partial diskutil, (ejectable and 'eject' or 'unmount'), path
   action = (mods) ->

@@ -21,11 +21,11 @@ toggle = (fn) -> () -> fn not fn!
 
 relaunch = () ->
   log.info 'Relaunching Hammerspoon...'
-  execute '(while ps -p ' .. hs.processInfo.processID .. ' > /dev/null; do sleep 1; done; open -a "' .. hs.processInfo.bundlePath .. '") &'
+  execute "(while ps -p #{hs.processInfo.processID} > /dev/null; do sleep 1; done; open -a \"#{hs.processInfo.bundlePath}\") &"
   exit true, true
 
 editcfg = (editor, indir) ->
-  execute editor, indir and hs.configdir or hs.configdir .. '/init.moon'
+  execute editor, indir and hs.configdir or "#{hs.configdir}/init.moon"
 
 MENU = {
   {

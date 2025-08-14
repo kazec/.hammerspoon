@@ -53,7 +53,7 @@ RULE_FORMATTERS =
     mask = mask == '' and 32 or tonumber mask
 
     if not p1 or p1 > 0xff or p2 > 0xff or p3 > 0xff or p4 > 0xff or mask > 32 then
-      log.error "Invalid 'net' rule: " .. rule
+      log.errorf "Invalid 'net' rule: %s", rule
       return
     else
       -- JavaScript and Lua/C both use Two's Complement, while one uses 32 bits and the other uses 64 bits.
@@ -64,16 +64,16 @@ RULE_FORMATTERS =
       return format '(ip & %s) === %s', mask, pattern
   'host': (rule) ->
     return format 'host === %q', rule if find rule, '^[-_%w]+[%.-_%w]*'
-    log.error "Invalid 'host' rule: " .. rule
+    log.errorf "Invalid 'host' rule: %s", rule
   'domain': (rule) ->
     return format 'matchDomain(host, %q)', rule if find rule, '^[-_%w]+[%.-_%w]*'
-    log.error "Invalid 'domain' rule: " .. rule
+    log.errorf "Invalid 'domain' rule: %s", rule
   'host-keyword': (rule) ->
-    return rule .. '.test(host)' if javascript rule
-    log.error "Invalid 'url-keyword' rule: " .. rule
+    return "#{rule}.test(host)" if javascript rule
+    log.errorf "Invalid 'url-keyword' rule: %s", rule
   'url-keyword': (rule) ->
-    return rule .. '.test(url)' if javascript rule
-    log.error "Invalid 'url-keyword' rule: " .. rule
+    return "#{rule}.test(url)" if javascript rule
+    log.errorf "Invalid 'url-keyword' rule: %s", rule
 
 conditions = (rsnames, rsdict) ->
   netr, textr = nil, nil
@@ -111,9 +111,9 @@ compile = (pnames, prsndict, pdict, rsdict) ->
     return format TEMPLATE, textr, defaultr
 
 minify = (pac) ->
-  minified, success = run '/usr/local/bin/node /usr/local/bin/uglifyjs -m "toplevel,reserved=[\'FindProxyForURL\']" <<< ' .. escape pac
+  minified, success = run "/usr/local/bin/node /usr/local/bin/uglifyjs -m 'toplevel,reserved=['FindProxyForURL']' <<< #{escape pac}"
   return minified if success
-  log.warnf 'Failed to minify pac, using the original one instead.\n' .. pac if log.warnf
+  log.warnf "Failed to minify pac, using the original one instead.\n%s", pac if log.warnf
   return pac
 
 checkers.javascript = (v) -> isstring(v) and javascript(v)
