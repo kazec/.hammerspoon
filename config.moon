@@ -8,9 +8,10 @@ import execute from sh
 import partial from fn
 import load from daemon
 import bind from require 'hs.hotkey'
-import window, itunes, mouse from hs
+import window, mouse from hs
 import doAfter, usleep from require 'hs.timer'
 import windowBehaviors from require 'hs.drawing'
+import defaultOutputDevice from require 'hs.audiodevice'
 import launchOrFocusByBundleID from require 'hs.application'
 
 ---------------------------------------------------------------------------
@@ -89,27 +90,6 @@ console = load 'console',
 --     interface: 'localhost'
 --     port: 8000
 
-urlevent = load 'urlevent',
-  router: {
-    {
-      dest: 'com.microsoft.edgemac'
-      host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com', 'bilibili.com' }
-    },
-    {
-      -- Replace 'http(s)://' with 'macappstores://' to open in Mac App Store directly.
-      match: (host, params, url) ->
-        return host == 'itunes.apple.com' and params['mt'] == '12'
-      dest: (host, params, url) ->
-        url = url\gsub 'https?://(.+)', 'macappstores://%1'
-        return execute 'open', url
-    },
-    {
-      dest: 'com.apple.Safari'
-    }
-  },
-  callbacks:
-    'reload': hs.reload
-
 window = load 'window', () =>
   -- f13, mapped to tab
   -- switch focused window between screens
@@ -182,11 +162,37 @@ window = load 'window', () =>
   -- bind '⇧+⌃+⌥', 'down' , partial(@focused, partial(@layout.extend, -1, 00))
   -- bind '⇧+⌃+⌥', 'left' , partial(@focused, partial(@layout.extend, 00, 01))
 
+urlevent = load 'urlevent',
+  -- router: {
+  --   {
+  --     dest: 'com.microsoft.edgemac'
+  --     host: { 'youtube.com', 'douyu.com', 'panda.tv', 'huomao.com', 'v2ex.com', 'weibo.com', 'bilibili.com' }
+  --   },
+  --   {
+  --     -- Replace 'http(s)://' with 'macappstores://' to open in Mac App Store directly.
+  --     match: (host, params, url) ->
+  --       return host == 'itunes.apple.com' and params['mt'] == '12'
+  --     dest: (host, params, url) ->
+  --       url = url\gsub 'https?://(.+)', 'macappstores://%1'
+  --       return execute 'open', url
+  --   },
+  --   {
+  --     dest: 'com.apple.Safari'
+  --   }
+  -- },
+  callbacks:
+    'reload': hs.reload,
+    'toggle_app': (_, args) -> window.toggle args['id']
+
+pressSystemKey = (code) ->
+  hs.eventtap.event.newSystemKeyEvent(code, true)\post!
+  hs.eventtap.event.newSystemKeyEvent(code, false)\post!
+
 hotcorners = load 'hotcorners',
   debug: false
   supportMultiDisplays: true
   screenDidChangeDelay: 5
-  'top-edge':
+  'bottom-edge':
     'double-click': {
       { modifiers: '⌘', fn: sys.darkmode.toggle }
       { modifiers: '⌥', fn: sys.finder.toggleHidden }
@@ -202,7 +208,7 @@ hotcorners = load 'hotcorners',
       { modifiers: 0, fn: partial console.toggle, false }
     }
     'double-click': {
-      { modifiers: '⌘', fn: partial ds4irc.start, '192.168.1.202', 4950 }
+      -- { modifiers: '⌘', fn: partial ds4irc.start, '192.168.1.202', 4950 }
       { modifiers: 0, fn: hs.reload }
     }
     'right-click': {
@@ -212,22 +218,24 @@ hotcorners = load 'hotcorners',
     }
   'bottom-right':
     'mouse-hover': {
-      { modifiers: '⌘', fn: itunes.playpause }
-      { modifiers: '⌘', interval: 5, fn: itunes.next }
+      { modifiers: '⌘', fn: partial pressSystemKey, 'PLAY' }
+      { modifiers: '⌘', interval: 5, fn: partial pressSystemKey, 'NEXT' }
     }
     'left-click': {
-      { modifiers: 0, fn: itunes.next }
-      { modifiers: '⌥', fn: itunes.volumeDown }
-      { modifiers: '⌥+⇧', fn: itunes.volumeUp }
+      { modifiers: 0, fn: partial pressSystemKey, 'NEXT' }
+      { modifiers: '⌥', fn: partial pressSystemKey, 'SOUND_DOWN' }
+      { modifiers: '⌥+⇧', fn: partial pressSystemKey, 'SOUND_UP' }
     }
     'right-click': {
-      { modifiers: 0, fn: itunes.previous }
-      { modifiers: '⌥', fn: sys.itunes.currentTrack }
+      { modifiers: 0, fn: partial pressSystemKey, 'PREVIOUS' }
     }
     'scroll-wheel': {
       {
         modifiers: 0, fn: (_, _, deltaY) ->
-          itunes.setVolume(itunes.getVolume! + (deltaY < 0 and 1 or -1)) if deltaY != 0
+          audioDevice = defaultOutputDevice!
+          if audioDevice and deltaY != 0
+            volume = audioDevice\outputVolume!
+            audioDevice\setOutputVolume(volume + (deltaY < 0 and 1 or -1))
       }
     }
 

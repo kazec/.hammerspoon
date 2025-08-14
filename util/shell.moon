@@ -58,5 +58,5 @@ script_path = () -> debug.getinfo(2, "S").source\sub(2)\match("(.*/)")
   -- Execute a list of commands/arguments using 'os.execute'.
   execute: T 'string, string...', execute
   -- Get current script file path
-  script_path: T '', script_path
+  script_path: script_path
 }

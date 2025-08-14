@@ -63,4 +63,7 @@ end
 
 -- Load moonscript script
 
-dofile('init.moon')
+ok, error = xpcall(dofile, debug.traceback, 'init.moon')
+if not ok then
+   hs.showError(error)
+end
