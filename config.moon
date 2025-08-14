@@ -267,27 +267,25 @@ menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' }, {
     consoleAlphaValues: { 0.25, 0.50, 0.75, 1.00 }
 }
 
-watchers: load 'watchers', { 'config', 'wifi', 'usb' },
+notesTimer = nil
+
+watchers: load 'watchers', { 'config', 'app', 'usb' },
   config: { '/Spoons' , '/assets/', '/ext/', '/%.DS_Store', '/%.git' }
-  wifi:
-    'Uncosmos':
-      connected: partial exec, [[
-        cd $HOME/.config/v2ray && ln -sf private.json config.json && \
-        cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
-      ]]
-      disconnected: partial exec, [[
-        cd $HOME/.config/v2ray && ln -sf public.json config.json && \
-        cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
-      ]]
-    'ERR_CONN_CLOSED':
-      connected: partial exec, [[
-        cd $HOME/.config/v2ray && ln -sf private.json config.json && \
-        cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
-      ]]
-      disconnected: partial exec, [[
-        cd $HOME/.config/v2ray && ln -sf public.json config.json && \
-        cd $HOME/Library/LaunchAgents && launchctl unload org.v2ray.plist && launchctl load org.v2ray.plist
-      ]]
+  app:
+    'com.apple.Notes':
+      activated: () ->
+        notesTimer\stop! if notesTimer
+        notesTimer = nil
+        -- open ProNotes if Notes is activated
+        id = 'com.dexterleng.ProNotes' 
+        hs.application.open id unless hs.application.get id
+      deactivated: (app) ->
+        -- close ProNotes if Notes is deactivated after 60 seconds
+        notesTimer = doAfter 60, () ->
+          if not app or not app\isFrontmost!
+            pronotes = hs.application.get 'com.dexterleng.ProNotes'
+            pronotes\kill! if pronotes
+  -- wifi:
   usb:
     'Poker':
       connected: partial exec, [[
@@ -303,10 +301,10 @@ watchers: load 'watchers', { 'config', 'wifi', 'usb' },
       disconnected: partial exec, [[
         /usr/local/bin/karabiner_cli --select-profile 'AIK'
       ]]
-    'Wireless Controller':
-      connected: () -> -- some delay is needed
-        usleep(100000)
-        ds4irc.start '192.168.1.202', 4950
-      disconnected: ds4irc.stop
+    -- 'Wireless Controller':
+    --   connected: () -> -- some delay is needed
+    --     usleep(100000)
+    --     ds4irc.start '192.168.1.202', 4950
+    --   disconnected: ds4irc.stop
 
 return fn.table.merge { :fn, :sh, :sys, :R, :C, :daemon, :ds4irc }, daemon.modules!

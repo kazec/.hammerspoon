@@ -33,22 +33,36 @@ imap = (list, fn) ->
     t[i] = fn v
   return t
 
-map = (dict, fn) ->
-  t = {}
-  for k, v in pairs dict
-    t[isidx(k) and #t + 1 or k] = fn v
-  return t
-
 imapi = (list, fn) ->
   t = {}
   for i, v in ipairs list
     t[i] = fn(i, v)
   return t
 
+imapkv = (list, fn) ->
+  t = {}
+  for i, v in ipairs list
+    k, v = fn(v)
+    t[k] = v
+  return t
+
+map = (dict, fn) ->
+  t = {}
+  for k, v in pairs dict
+    t[isidx(k) and #t + 1 or k] = fn v
+  return t
+
 mapk = (dict, fn) ->
   t = {}
   for k, v in pairs dict
     t[isidx(k) and #t + 1 or k] = fn k, v
+  return 
+
+mapkv = (dict, fn) ->
+  t = {}
+  for k, v in pairs dict
+    k, v = fn(k, v)
+    t[k] = v
   return t
 
 ifilter = (list, fn) ->
@@ -210,9 +224,11 @@ merge {
   each:      T 'table, function', each
   eachk:     T 'table, function', eachk
   imap:      T 'table, function', imap
-  map:       T 'table, function', map
   imapi:     T 'table, function', imapi
+  imapkv:    T 'table, function', imapkv
+  map:       T 'table, function', map
   mapk:      T 'table, function', mapk
+  mapkv:     T 'table, function', mapkv
   ifilter:   T 'table, function', ifilter
   filter:    T 'table, function', filter
   ifilteri:  T 'table, function', ifilteri
