@@ -32,6 +32,7 @@ run = (...) ->
   log.tracef 'Running shell command:\n %s', cmd if log.tracef
   handle = popen cmd
   output = handle\read '*a'
+  output = output\gsub '\n$', ''
   success, status, code = handle\close!
   log.tracef 'Result: %s, %s, %d', output, status, code if log.tracef
   return success and output or nil, status, code if success
@@ -40,7 +41,9 @@ execute = (...) ->
   args = {...}
   cmd = #args == 1 and args[1] or concat args
   log.tracef 'Executing shell command:\n %s', cmd if log.tracef
-  return exec cmd
+  status = exec cmd
+  log.tracef 'Status: %s', status if log.tracef
+  return status
 
 script_path = () -> debug.getinfo(2, "S").source\sub(2)\match("(.*/)")
 

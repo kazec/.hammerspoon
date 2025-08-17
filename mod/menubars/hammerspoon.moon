@@ -24,7 +24,8 @@ relaunch = () ->
   execute "(while ps -p #{hs.processInfo.processID} > /dev/null; do sleep 1; done; open -a \"#{hs.processInfo.bundlePath}\") &"
   exit true, true
 
-editcfg = (editor, indir) ->
+editor = os.getenv 'EDITOR' or 'open'
+editcfg = (indir) ->
   execute editor, indir and hs.configdir or "#{hs.configdir}/init.moon"
 
 MENU = {
@@ -164,9 +165,13 @@ updateFlatMenu = (menu) ->
   menu[13].checked = hs.automaticallyCheckForUpdates!
 
 makemenu = (mod) ->
+  log.infof 'mod: %s', mod
   return if mod['alt'] == true
     updateFlatMenu FLAT_MENU
     FLAT_MENU
+  else if mod['ctrl'] == true
+    editcfg true
+    MENU
   else
     updateMenu MENU
     MENU
@@ -174,12 +179,12 @@ makemenu = (mod) ->
 init = (options) ->
   with options
     icon = .icon or menubars._defaultIcon
-    editor = .configEditor or 'open'
+    editor = .configEditor or editor
     alphaValues = .consoleAlphaValues or { 0.3, 0.5, 0.75, 1.00 }
 
-    edit = partial editcfg, editor, false
-    editdir = partial editcfg, editor, true
-    editm = (mod) -> editcfg(editor, mod['alt'] == true)
+    edit = partial editcfg, false
+    editdir = partial editcfg, true
+    editm = (mod) -> editcfg(mod['alt'] == true)
     MENU[1].fn = editm
     MENU[1].menu[2].fn = edit
     MENU[1].menu[3].fn = editdir

@@ -14,23 +14,27 @@ import merge from require 'fn.table'
 
 self =
   _watcher: nil
-  _callbacks: nil
+  _callbacks: {}
 
-bind = (productName, eventName, callback) ->
-  callbackFound = @_callbacks[productName]
-  if not callbackFound
-    callbackFound = {}
-    @_callbacks[productName] = callbackFound
-  callbackFound[eventName] = callback
+bind = (deviceName, eventName, callback) ->
+  if isfunction deviceName
+    @_callbacks[#@_callbacks + 1] = deviceName
+    return
+
+  @_callbacks[#@_callbacks + 1] = (info) ->
+    if deviceName and deviceName ~= info.productName
+      return
+    if eventName and eventName ~= info.eventType
+      return
+    
+    callback info
 
 watcherCallback = (event) ->
   with event
     log.infof 'USB Device: %q(%d) - %q(%d) %s', .productName, .productID, .vendorName, .vendorID, .eventType\upper! if log.infof
 
-    if callbackFound = @_callbacks[.productName]
-      eventName = .eventType == 'added' and 'connected' or 'disconnected'
-      callback = callbackFound[eventName]
-      callback event if callback
+  for callback in *@_callbacks
+    callback event
 
 init = (func) ->
   @_callbacks = {}
@@ -46,6 +50,6 @@ stop = () -> @_watcher\stop!
 
 merge self, {
   init: T 'function', init
-  bind: T 'string, ?function, ?function', bind
+  bind: T '?string|function, ?string, ?function', bind
   :start, :stop
 }

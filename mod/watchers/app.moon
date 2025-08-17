@@ -61,6 +61,6 @@ stop = () -> @_watcher\stop!
 
 merge self, {
   init: T 'function', init
-  bind: T 'string, table|function', bind
+  bind: T 'string, string, function', bind
   :start, :stop
 }

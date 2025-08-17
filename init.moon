@@ -1,6 +1,6 @@
 -- Debug Settings --------------------------------------------------------
 
--- dofile './debug.moon'
+dofile './debug.moon'
 
 with require 'log'
   .tocli false

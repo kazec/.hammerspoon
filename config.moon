@@ -293,41 +293,35 @@ menubars = load 'menubars', { 'caffeinate', 'volume', 'hammerspoon' },
     icon: R '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarRemovableDisk.icns', { w: 18, h: 16 }
     showVolumeDetails: true
   hammerspoon:
-    configEditor: '/usr/local/bin/atom'
+    configEditor: sh.run 'zsh', '-c', 'which code'
     consoleAlphaValues: { 0.25, 0.50, 0.75, 1.00 }
 
-watchers: load 'watchers', { 'config', 'app', 'usb' },
+watchers: load 'watchers', { 'config', 'app' },
   config: { '/Spoons' , '/assets/', '/ext/', '/%.DS_Store', '/%.git' }
   app: () =>
     timer = nil
     pronotesid = 'com.dexterleng.ProNotes' 
-    @bind 'com.apple.Notes', 'activated', () ->
+    @.bind 'com.apple.Notes', 'activated', () ->
       timer\stop! if timer
       timer = nil
       -- open ProNotes if Notes is activated
       hs.application.open pronotesid unless hs.application.get pronotesid
-    @bind 'com.apple.Notes', 'deactivated', (app) ->
+    @.bind 'com.apple.Notes', 'deactivated', (app) ->
       -- close ProNotes if Notes is deactivated after 60 seconds
       timer = doAfter 60, () ->
         if not app or not app\isFrontmost!
           pronotes = hs.application.get 'com.dexterleng.ProNotes'
           pronotes\kill! if pronotes
-  usb: () =>
-    @bind 'Poker', 'connected', partial exec, [[
-      /usr/local/bin/karabiner_cli --select-profile 'Poker'
-    ]]
-    @bind 'Poker', 'disconnected', partial exec, [[
-      /usr/local/bin/karabiner_cli --select-profile 'AIK'
-    ]]
-    @bind 'Poker II', 'connected', partial exec, [[
-      /usr/local/bin/karabiner_cli --select-profile 'Poker'
-    ]]
-    @bind 'Poker II', 'disconnected', partial exec, [[
-      /usr/local/bin/karabiner_cli --select-profile 'AIK'
-    ]]
-    -- @bind 'Wireless Controller', 'connected', () ->
+  -- usb: () =>
+    -- @.bind 'Poker II', 'connected', partial exec, [[
+    --   /usr/local/bin/karabiner_cli --select-profile 'Poker'
+    -- ]]
+    -- @.bind 'Poker II', 'disconnected', partial exec, [[
+    --   /usr/local/bin/karabiner_cli --select-profile 'AIK'
+    -- ]]
+    -- @.bind 'Wireless Controller', 'connected', () ->
     --   usleep 100000
     --   ds4irc.start '192.168.1.202', 4950
-    -- @bind 'Wireless Controller', 'disconnected', ds4irc.stop
+    -- @.bind 'Wireless Controller', 'disconnected', ds4irc.stop
 
 return fn.table.merge { :fn, :sh, :sys, :R, :C, :daemon, :ds4irc }, daemon.modules!
